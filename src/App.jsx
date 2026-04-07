@@ -125,7 +125,7 @@ function RouteMap({ scenario, previousScenario }) {
 
         {/* Warehouses */}
         {scenario.warehouses.map((wh) => (
-          <g key={wh.id} className="warehouse" filter="url(#glow)">
+          <g key={wh.id} className="warehouse">
             <rect
               x={wh.x - 18}
               y={wh.y - 18}
