@@ -3,6 +3,7 @@ import { scenarios, allPoints } from './data/scenarios'
 import AddressNormalization from './AddressNormalization'
 import AnalyticsForecast from './AnalyticsForecast'
 import RoutingComplexity from './RoutingComplexity'
+import PharmaVertical from './PharmaVertical'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -284,6 +285,12 @@ export default function App() {
         >
           Complessità routing
         </button>
+        <button
+          className={`page-tab ${page === 'pharma' ? 'active' : ''}`}
+          onClick={() => setPage('pharma')}
+        >
+          Vincoli pharma
+        </button>
       </nav>
 
       {page === 'whatif' && <WhatIfPage />}
@@ -292,6 +299,7 @@ export default function App() {
       )}
       {page === 'analytics' && <AnalyticsForecast />}
       {page === 'complexity' && <RoutingComplexity />}
+      {page === 'pharma' && <PharmaVertical />}
     </div>
   );
 }
