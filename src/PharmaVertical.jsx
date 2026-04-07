@@ -11,21 +11,22 @@ import {
 // ─── 1. Timeline (Gantt) ─────────────────────────────────────────
 function GanttTimeline() {
   const W = 1200
-  const H = 620
-  const padL = 170
+  const H = 640
+  const padL = 110
   const padR = 30
-  const padT = 100
-  const padB = 50
+  const padT = 90
+  const padB = 36
 
   const startHour = 6
-  const endHour = 27 // 03:00 del giorno dopo
+  const endHour = 28 // 04:00 del giorno dopo
   const hourW = (W - padL - padR) / (endHour - startHour)
   const rowH = (H - padT - padB) / ganttVehicles.length
-  const blockH = 52
-  const nowHour = 11.5 // ora corrente fittizia per l'indicatore
+  const blockH = Math.min(58, rowH * 0.78)
+  const nowHour = 12.5 // ora corrente fittizia per l'indicatore
 
   const xFor = (h) => padL + (h - startHour) * hourW
-  const yFor = (i) => padT + i * rowH + (rowH - blockH) / 2
+  const rowYCenter = (i) => padT + i * rowH + rowH / 2
+  const yFor = (i) => rowYCenter(i) - blockH / 2
 
   const formatHour = (h) => {
     const hh = Math.floor(h % 24)
@@ -38,6 +39,14 @@ function GanttTimeline() {
     (acc, v) => acc + v.deliveries.reduce((s, d) => s + d.duration, 0),
     0
   )
+
+  // Helper per estrarre le iniziali della farmacia per un mini-marker
+  const initials = (name) => {
+    const cleaned = name.replace(/^(Osp\.?|F\.?|G\.M\.?|P\.S\.?)\s*/, '')
+    const parts = cleaned.split(/[\s.]+/).filter(Boolean)
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
 
   return (
     <div className="chart-card">
@@ -62,11 +71,23 @@ function GanttTimeline() {
         <defs>
           <pattern id="diag-night" width="6" height="6" patternUnits="userSpaceOnUse">
             <rect width="6" height="6" fill="rgba(167, 139, 250, 0.04)" />
-            <line x1="0" y1="6" x2="6" y2="0" stroke="rgba(167, 139, 250, 0.12)" strokeWidth="1" />
+            <line x1="0" y1="6" x2="6" y2="0" stroke="rgba(167, 139, 250, 0.14)" strokeWidth="1" />
           </pattern>
+          {ganttVehicles.map((v, i) => (
+            <linearGradient key={`lane-${i}`} id={`lane-${i}`} x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stopColor={v.typeColor} stopOpacity="0.07" />
+              <stop offset="100%" stopColor={v.typeColor} stopOpacity="0.01" />
+            </linearGradient>
+          ))}
+          {Object.entries(ganttTypes).map(([key, t]) => (
+            <linearGradient key={`grad-${key}`} id={`grad-${key}`} x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor={t.color} stopOpacity="1" />
+              <stop offset="100%" stopColor={t.color} stopOpacity="0.85" />
+            </linearGradient>
+          ))}
         </defs>
 
-        {/* Background notturno (21:00 - 06:00) */}
+        {/* Background notturno (21:00 - 06:00 next day) */}
         <rect
           x={xFor(21)}
           y={padT - 30}
@@ -106,6 +127,31 @@ function GanttTimeline() {
           )
         })}
 
+        {/* Vehicle lanes (background) */}
+        {ganttVehicles.map((veh, i) => (
+          <rect
+            key={`lane-bg-${i}`}
+            x={padL}
+            y={padT + i * rowH}
+            width={W - padL - padR}
+            height={rowH}
+            fill={`url(#lane-${i})`}
+          />
+        ))}
+
+        {/* Lane separators */}
+        {ganttVehicles.map((_, i) => (
+          <line
+            key={`sep-${i}`}
+            x1={padL}
+            x2={W - padR}
+            y1={padT + (i + 1) * rowH}
+            y2={padT + (i + 1) * rowH}
+            stroke="rgba(255,255,255,0.05)"
+            strokeWidth="1"
+          />
+        ))}
+
         {/* Linea ora corrente */}
         <line
           x1={xFor(nowHour)}
@@ -136,124 +182,138 @@ function GanttTimeline() {
           ORA
         </text>
 
-        {/* Vehicle rows */}
-        {ganttVehicles.map((veh, i) => (
-          <g key={veh.id}>
-            {/* Row hover band */}
-            <rect
-              x={padL}
-              y={padT + i * rowH}
-              width={W - padL - padR}
-              height={rowH}
-              fill={i % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'}
-            />
-            {/* Vehicle label badge */}
-            <rect
-              x={padL - 150}
-              y={yFor(i) + (blockH - 36) / 2}
-              width="138"
-              height="36"
-              rx="8"
-              fill="rgba(255,255,255,0.04)"
-              stroke={veh.typeColor}
-              strokeWidth="1.5"
-              strokeOpacity="0.6"
-            />
-            <circle
-              cx={padL - 150 + 22}
-              cy={yFor(i) + blockH / 2}
-              r="11"
-              fill={veh.typeColor}
-            />
-            <text
-              x={padL - 150 + 22}
-              y={yFor(i) + blockH / 2 + 5}
-              fill="#0F1923"
-              fontSize="13"
-              fontWeight="800"
-              textAnchor="middle"
-              fontFamily="Inter, sans-serif"
-            >
-              {veh.id}
-            </text>
-            <text
-              x={padL - 150 + 40}
-              y={yFor(i) + blockH / 2 + 5}
-              fill="#ffffff"
-              fontSize="13"
-              fontWeight="600"
-              fontFamily="Inter, sans-serif"
-            >
-              {veh.typeLabel}
-            </text>
+        {/* Vehicle rows content */}
+        {ganttVehicles.map((veh, i) => {
+          const cy = rowYCenter(i)
+          const firstStart = veh.deliveries[0].start
+          const lastDelivery = veh.deliveries[veh.deliveries.length - 1]
+          const lastEnd = lastDelivery.start + lastDelivery.duration
+          const hubReturn = veh.hubReturn || lastEnd
 
-            {/* Hub start */}
-            <g>
+          return (
+            <g key={veh.id}>
+              {/* Vehicle big number badge on the left */}
               <rect
-                x={xFor(startHour) - 6}
-                y={yFor(i) + (blockH - 36) / 2}
-                width="36"
-                height="36"
-                rx="6"
-                fill="rgba(255,255,255,0.04)"
-                stroke="rgba(255,255,255,0.15)"
-                strokeWidth="1"
+                x={20}
+                y={cy - 30}
+                width="74"
+                height="60"
+                rx="12"
+                fill={veh.typeColor}
+                fillOpacity="0.12"
+                stroke={veh.typeColor}
+                strokeWidth="2"
               />
               <text
-                x={xFor(startHour) + 12}
-                y={yFor(i) + blockH / 2 + 6}
-                fill="#c0c8d4"
-                fontSize="18"
+                x={57}
+                y={cy + 10}
+                fill={veh.typeColor}
+                fontSize="28"
+                fontWeight="800"
                 textAnchor="middle"
                 fontFamily="Inter, sans-serif"
               >
-                🏭
+                {veh.id}
               </text>
-            </g>
 
-            {/* Deliveries */}
-            {veh.deliveries.map((d, j) => {
-              const t = ganttTypes[d.type]
-              const x = xFor(d.start)
-              const w = d.duration * hourW
-              const maxChars = Math.max(4, Math.floor((w - 28) / 8))
-              const displayName =
-                d.name.length > maxChars ? d.name.slice(0, maxChars - 1) + '…' : d.name
-              return (
-                <g key={`d-${i}-${j}`}>
-                  <rect
-                    x={x}
-                    y={yFor(i)}
-                    width={w - 4}
-                    height={blockH}
-                    rx="8"
-                    fill={t.color}
-                  />
-                  <text
-                    x={x + 14}
-                    y={yFor(i) + 22}
-                    fill="#0F1923"
-                    fontSize="14"
-                    fontWeight="700"
-                    fontFamily="Inter, sans-serif"
-                  >
-                    {displayName}
-                  </text>
-                  <text
-                    x={x + 14}
-                    y={yFor(i) + 40}
-                    fill="rgba(15, 25, 35, 0.7)"
-                    fontSize="11"
-                    fontWeight="600"
-                    fontFamily="Inter, sans-serif"
-                  >
-                    {formatHour(d.start)} · {Math.round(d.duration * 60)}min
-                  </text>
-                </g>
-              )
-            })}
-          </g>
-        ))}
+              {/* Driving line under the blocks (start hub → last block → return) */}
+              <line
+                x1={xFor(startHour) + 16}
+                x2={xFor(hubReturn) - 4}
+                y1={cy}
+                y2={cy}
+                stroke={veh.typeColor}
+                strokeOpacity="0.35"
+                strokeWidth="2"
+                strokeDasharray="2 5"
+              />
+
+              {/* Hub start icon */}
+              <g>
+                <circle cx={xFor(startHour) + 8} cy={cy} r="13" fill="#0d1117" stroke={veh.typeColor} strokeWidth="2" />
+                <text
+                  x={xFor(startHour) + 8}
+                  y={cy + 5}
+                  fill={veh.typeColor}
+                  fontSize="14"
+                  textAnchor="middle"
+                  fontFamily="Inter, sans-serif"
+                >
+                  🏭
+                </text>
+              </g>
+
+              {/* Hub return icon */}
+              <g>
+                <circle cx={xFor(hubReturn) + 6} cy={cy} r="13" fill="#0d1117" stroke={veh.typeColor} strokeWidth="2" strokeDasharray="3 2" />
+                <text
+                  x={xFor(hubReturn) + 6}
+                  y={cy + 5}
+                  fill={veh.typeColor}
+                  fontSize="13"
+                  textAnchor="middle"
+                  fontFamily="Inter, sans-serif"
+                >
+                  ↩
+                </text>
+              </g>
+
+              {/* Deliveries */}
+              {veh.deliveries.map((d, j) => {
+                const t = ganttTypes[d.type]
+                const x = xFor(d.start)
+                const w = d.duration * hourW - 3
+                const ini = initials(d.name)
+                return (
+                  <g key={`d-${i}-${j}`}>
+                    {/* Block */}
+                    <rect
+                      x={x}
+                      y={yFor(i)}
+                      width={w}
+                      height={blockH}
+                      rx="9"
+                      fill={`url(#grad-${d.type})`}
+                    />
+                    {/* Top accent stripe */}
+                    <rect
+                      x={x}
+                      y={yFor(i)}
+                      width={w}
+                      height="4"
+                      rx="2"
+                      fill="#0F1923"
+                      fillOpacity="0.18"
+                    />
+                    {/* Initials chip */}
+                    <text
+                      x={x + w / 2}
+                      y={yFor(i) + blockH / 2 + 2}
+                      fill="#0F1923"
+                      fontSize="16"
+                      fontWeight="800"
+                      textAnchor="middle"
+                      fontFamily="Inter, sans-serif"
+                    >
+                      {ini}
+                    </text>
+                    {/* Mini icon below initials */}
+                    <text
+                      x={x + w / 2}
+                      y={yFor(i) + blockH - 6}
+                      fill="rgba(15, 25, 35, 0.7)"
+                      fontSize="10"
+                      textAnchor="middle"
+                      fontFamily="Inter, sans-serif"
+                    >
+                      {t.icon}
+                    </text>
+                  </g>
+                )
+              })}
+            </g>
+          )
+        })}
       </svg>
     </div>
   )
