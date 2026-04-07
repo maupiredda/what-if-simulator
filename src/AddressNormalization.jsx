@@ -98,65 +98,85 @@ function RecordRow({ record, phase }) {
     rowClass += ' row-success'
   }
 
+  const cliSugg = suggestions?.find((s) => s.field === 'cliente')
+  const addrSugg = suggestions?.find((s) => s.field === 'indirizzo')
+  const capSugg = suggestions?.find((s) => s.field === 'cap')
+  const cittaSugg = suggestions?.find((s) => s.field === 'citta')
+  const twSugg = suggestions?.find((s) => s.field === 'tw')
+
   return (
     <tr className={rowClass}>
-      <td className="cell-id">#{record.id}</td>
-      <td>
-        <div className="cell-main">{record.cliente}</div>
-        {suggestions?.find((s) => s.field === 'cliente') && (
-          <div className="suggestion">
-            <span className="from">{suggestions.find((s) => s.field === 'cliente').from}</span>
-            <span className="arrow">→</span>
-            <span className="to">{suggestions.find((s) => s.field === 'cliente').to}</span>
-          </div>
-        )}
+      <td className="cell-id">
+        <div className="cell-wrap">#{record.id}</div>
       </td>
       <td>
-        <div className="cell-main">{record.indirizzo || '—'}</div>
-        {suggestions?.find((s) => s.field === 'indirizzo') && (
-          <div className="suggestion">
-            <span className="from">{suggestions.find((s) => s.field === 'indirizzo').from}</span>
-            <span className="arrow">→</span>
-            <span className="to">{suggestions.find((s) => s.field === 'indirizzo').to}</span>
-          </div>
-        )}
+        <div className="cell-wrap">
+          <div className="cell-main">{record.cliente}</div>
+          {cliSugg && (
+            <div className="suggestion">
+              <span className="from">{cliSugg.from}</span>
+              <span className="arrow">→</span>
+              <span className="to">{cliSugg.to}</span>
+            </div>
+          )}
+        </div>
       </td>
       <td>
-        <div className="cell-main">{record.cap || '—'}</div>
-        {suggestions?.find((s) => s.field === 'cap') && (
-          <div className="suggestion">
-            <span className="from">{suggestions.find((s) => s.field === 'cap').from}</span>
-            <span className="arrow">→</span>
-            <span className="to">{suggestions.find((s) => s.field === 'cap').to}</span>
-          </div>
-        )}
+        <div className="cell-wrap">
+          <div className="cell-main">{record.indirizzo || '—'}</div>
+          {addrSugg && (
+            <div className="suggestion">
+              <span className="from">{addrSugg.from}</span>
+              <span className="arrow">→</span>
+              <span className="to">{addrSugg.to}</span>
+            </div>
+          )}
+        </div>
       </td>
       <td>
-        <div className="cell-main">{record.citta || '—'}</div>
-        {suggestions?.find((s) => s.field === 'citta') && (
-          <div className="suggestion">
-            <span className="from">{suggestions.find((s) => s.field === 'citta').from}</span>
-            <span className="arrow">→</span>
-            <span className="to">{suggestions.find((s) => s.field === 'citta').to}</span>
-          </div>
-        )}
+        <div className="cell-wrap">
+          <div className="cell-main">{record.cap || '—'}</div>
+          {capSugg && (
+            <div className="suggestion">
+              <span className="from">{capSugg.from}</span>
+              <span className="arrow">→</span>
+              <span className="to">{capSugg.to}</span>
+            </div>
+          )}
+        </div>
+      </td>
+      <td>
+        <div className="cell-wrap">
+          <div className="cell-main">{record.citta || '—'}</div>
+          {cittaSugg && (
+            <div className="suggestion">
+              <span className="from">{cittaSugg.from}</span>
+              <span className="arrow">→</span>
+              <span className="to">{cittaSugg.to}</span>
+            </div>
+          )}
+        </div>
       </td>
       <td className="cell-tw">
-        <div className="cell-main mono">{record.tw || '—'}</div>
-        {suggestions?.find((s) => s.field === 'tw') && (
-          <div className="suggestion">
-            <span className="from mono">{suggestions.find((s) => s.field === 'tw').from}</span>
-            <span className="arrow">→</span>
-            <span className="to mono">{suggestions.find((s) => s.field === 'tw').to}</span>
-          </div>
-        )}
+        <div className="cell-wrap">
+          <div className="cell-main mono">{record.tw || '—'}</div>
+          {twSugg && (
+            <div className="suggestion">
+              <span className="from mono">{twSugg.from}</span>
+              <span className="arrow">→</span>
+              <span className="to mono">{twSugg.to}</span>
+            </div>
+          )}
+        </div>
       </td>
       <td className="cell-status">
-        <div className="badges-stack">
-          {phase.showIssues &&
-            issues.map((issue) => <IssueBadge key={issue} type={issue} />)}
-          {phase.showFixes &&
-            fixes.map((fix) => <FixBadge key={fix} type={fix} />)}
+        <div className="cell-wrap">
+          <div className="badges-stack">
+            {phase.showIssues &&
+              issues.map((issue) => <IssueBadge key={issue} type={issue} />)}
+            {phase.showFixes &&
+              fixes.map((fix) => <FixBadge key={fix} type={fix} />)}
+          </div>
         </div>
       </td>
     </tr>
