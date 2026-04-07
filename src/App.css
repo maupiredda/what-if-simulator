@@ -440,7 +440,17 @@ body {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
 }
+
+/* Fixed column widths so layout never shifts between phases */
+.records-table col.col-id { width: 50px; }
+.records-table col.col-cliente { width: 200px; }
+.records-table col.col-indirizzo { width: 220px; }
+.records-table col.col-cap { width: 90px; }
+.records-table col.col-citta { width: 110px; }
+.records-table col.col-tw { width: 280px; }
+.records-table col.col-stato { width: 180px; }
 
 .records-table thead th {
   text-align: left;
@@ -457,10 +467,13 @@ body {
 }
 
 .records-table tbody td {
-  padding: 12px;
+  padding: 10px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   vertical-align: top;
   color: #e0e0e0;
+  height: 60px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .record-row {
@@ -495,11 +508,16 @@ body {
 
 .cell-tw {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cell-main {
   color: #e0e0e0;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .suggestion {
@@ -508,22 +526,29 @@ body {
   align-items: center;
   font-size: 11px;
   margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .suggestion .from {
   color: #8892b0;
   text-decoration: line-through;
   text-decoration-color: rgba(255, 107, 107, 0.6);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .suggestion .arrow {
   color: #4ECDC4;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .suggestion .to {
   color: #4ECDC4;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cell-status {
@@ -533,7 +558,7 @@ body {
 .badges-stack {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   align-items: flex-start;
 }
 

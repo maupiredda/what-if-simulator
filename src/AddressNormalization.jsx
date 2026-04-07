@@ -206,6 +206,15 @@ export default function AddressNormalization({ phaseIndex, setPhaseIndex }) {
         </div>
         <div className="table-scroll">
           <table className="records-table">
+            <colgroup>
+              <col className="col-id" />
+              <col className="col-cliente" />
+              <col className="col-indirizzo" />
+              <col className="col-cap" />
+              <col className="col-citta" />
+              <col className="col-tw" />
+              <col className="col-stato" />
+            </colgroup>
             <thead>
               <tr>
                 <th>#</th>
