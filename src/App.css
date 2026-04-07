@@ -915,6 +915,78 @@ body {
   }
 }
 
+/* ─── Requirements page ─── */
+.requirements-page .header {
+  text-align: left;
+  margin-bottom: 36px;
+}
+
+.requirements-page .header h1 {
+  font-size: 42px;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.requirement-card {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 50px 44px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 460px;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.requirement-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.req-icon-wrap {
+  margin-bottom: 32px;
+}
+
+.req-icon {
+  width: 130px;
+  height: 130px;
+  display: block;
+}
+
+.req-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+.req-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 440px;
+}
+
+.req-paragraphs p {
+  font-size: 17px;
+  line-height: 1.55;
+  color: #c0c8d4;
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .requirements-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Routing Complexity page ─── */
 .logo-planning {
   background: #2563eb;

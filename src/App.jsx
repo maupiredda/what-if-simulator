@@ -5,6 +5,7 @@ import AnalyticsForecast from './AnalyticsForecast'
 import RoutingComplexity from './RoutingComplexity'
 import PharmaVertical from './PharmaVertical'
 import AboutUs from './AboutUs'
+import Requirements from './Requirements'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -287,6 +288,12 @@ export default function App() {
           Analytics & Forecasting
         </button>
         <button
+          className={`page-tab ${page === 'requirements' ? 'active' : ''}`}
+          onClick={() => setPage('requirements')}
+        >
+          Requisiti
+        </button>
+        <button
           className={`page-tab ${page === 'complexity' ? 'active' : ''}`}
           onClick={() => setPage('complexity')}
         >
@@ -306,6 +313,7 @@ export default function App() {
         <AddressNormalization phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} />
       )}
       {page === 'analytics' && <AnalyticsForecast />}
+      {page === 'requirements' && <Requirements />}
       {page === 'complexity' && <RoutingComplexity />}
       {page === 'pharma' && <PharmaVertical />}
     </div>
