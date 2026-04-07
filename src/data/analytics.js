@@ -81,14 +81,14 @@ export const costBreakdown = [
 
 export const costTotal = costBreakdown.reduce((acc, c) => acc + c.value, 0);
 
-// Insights AI generati automaticamente
+// Insights AI generati automaticamente — testi sintetici per le slide
 export const insights = [
   {
     id: 1,
     type: 'forecast',
     icon: '📈',
-    title: 'Picco volumi previsto a Gennaio',
-    text: 'Il forecast indica +18% di consegne a Gennaio per la stagione influenzale. Suggerito: aggiungere 1 veicolo temporaneo o pianificare turni extra.',
+    title: 'Picco previsto a Gennaio',
+    text: '+18% volumi per stagione influenzale. Aggiungere 1 veicolo temporaneo.',
     color: '#4D96FF',
   },
   {
@@ -96,7 +96,7 @@ export const insights = [
     type: 'fleet',
     icon: '🚛',
     title: 'V3 e V7 sotto-utilizzati',
-    text: 'Veicoli V3 e V7 al 52% e 58% di utilizzo. Risparmio potenziale: ~4.200 €/mese riassegnando le rotte ai veicoli sovraccarichi (V2, V5).',
+    text: 'Risparmio potenziale ~4.200 €/mese riassegnando le rotte.',
     color: '#FFD93D',
   },
   {
@@ -104,7 +104,15 @@ export const insights = [
     type: 'cost',
     icon: '💰',
     title: 'Costo medio in calo',
-    text: 'Costo medio per consegna -3,4% dopo l\'ottimizzazione delle rotte di Marzo. Trend in linea con l\'obiettivo trimestrale di 8,20 €/consegna.',
+    text: '-3,4% dopo l\'ottimizzazione di Marzo. In linea con obiettivo 8,20 €.',
     color: '#4ECDC4',
+  },
+  {
+    id: 4,
+    type: 'puntualita',
+    icon: '⏱',
+    title: 'Puntualità in crescita',
+    text: '+1,2 pp rispetto al mese scorso. SLA cliente al 95% sempre superato.',
+    color: '#A78BFA',
   },
 ];

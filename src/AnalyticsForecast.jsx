@@ -245,15 +245,34 @@ function FleetPanel() {
     if (status === 'under') return '#FFD93D'
     return '#4ECDC4'
   }
+  // Aggregate stats for card sub-headline
+  const overCount = fleetUtilization.filter((v) => v.status === 'over').length
+  const underCount = fleetUtilization.filter((v) => v.status === 'under').length
+  const okCount = fleetUtilization.filter((v) => v.status === 'ok').length
+  const avgUsage = Math.round(
+    fleetUtilization.reduce((acc, v) => acc + v.usage, 0) / fleetUtilization.length
+  )
+
   return (
-    <div className="chart-card fleet-card">
+    <div className="chart-card">
       <div className="chart-header">
         <div>
           <h3 className="chart-title">Utilizzo flotta</h3>
-          <p className="chart-desc">% capacità impiegata per veicolo</p>
+          <p className="chart-desc">% capacità impiegata per veicolo — utilizzo medio {avgUsage}%</p>
+        </div>
+        <div className="chart-legend">
+          <span className="legend-pill">
+            <span className="dot" style={{ backgroundColor: '#FFD93D' }}></span>Sotto-utilizzato ({underCount})
+          </span>
+          <span className="legend-pill">
+            <span className="dot" style={{ backgroundColor: '#4ECDC4' }}></span>Ottimo ({okCount})
+          </span>
+          <span className="legend-pill">
+            <span className="dot" style={{ backgroundColor: '#FF6B6B' }}></span>Sovraccarico ({overCount})
+          </span>
         </div>
       </div>
-      <div className="fleet-bars">
+      <div className="fleet-bars-grid">
         {fleetUtilization.map((v) => (
           <div key={v.vehicle} className="fleet-row">
             <div className="fleet-label">{v.vehicle}</div>
@@ -272,66 +291,138 @@ function FleetPanel() {
           </div>
         ))}
       </div>
-      <div className="fleet-legend">
-        <span className="fleet-legend-item">
-          <span className="dot" style={{ backgroundColor: '#FFD93D' }}></span>Sotto-utilizzato
-        </span>
-        <span className="fleet-legend-item">
-          <span className="dot" style={{ backgroundColor: '#4ECDC4' }}></span>Ottimo
-        </span>
-        <span className="fleet-legend-item">
-          <span className="dot" style={{ backgroundColor: '#FF6B6B' }}></span>Sovraccarico
-        </span>
-      </div>
     </div>
   )
 }
 
 function CostsPanel() {
+  // Stacked horizontal bar SVG so the panel fills the same space as the volume chart
+  const W = 1000
+  const H = 400
+  const padL = 60
+  const padR = 30
+  const padT = 30
+  const padB = 60
+
+  const barH = 80
+  const barY = padT + 40
+  const barW = W - padL - padR
+  const cumPct = []
+  let acc = 0
+  costBreakdown.forEach((c) => {
+    const pct = (c.value / costTotal) * 100
+    cumPct.push({ ...c, start: acc, pct })
+    acc += pct
+  })
+
   return (
-    <div className="chart-card costs-card">
+    <div className="chart-card">
       <div className="chart-header">
         <div>
           <h3 className="chart-title">Simulazione costi mensili</h3>
-          <p className="chart-desc">Breakdown costi operativi flotta</p>
+          <p className="chart-desc">
+            Breakdown costi operativi flotta — totale {costTotal.toLocaleString('it-IT')} €/mese
+          </p>
+        </div>
+        <div className="chart-legend">
+          {costBreakdown.map((c) => (
+            <span key={c.label} className="legend-pill">
+              <span className="dot" style={{ backgroundColor: c.color }}></span>
+              {c.label}
+            </span>
+          ))}
         </div>
       </div>
-      <div className="costs-rows">
-        {costBreakdown.map((c) => {
-          const pct = (c.value / costTotal) * 100
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="volume-chart" preserveAspectRatio="xMidYMid meet">
+        {/* Stacked bar */}
+        {cumPct.map((c) => {
+          const x = padL + (barW * c.start) / 100
+          const w = (barW * c.pct) / 100
           return (
-            <div key={c.label} className="cost-row">
-              <div className="cost-row-head">
-                <span className="cost-label">
-                  <span className="dot" style={{ backgroundColor: c.color }}></span>
-                  {c.label}
-                </span>
-                <span className="cost-value">{c.value.toLocaleString('it-IT')} €</span>
-              </div>
-              <div className="cost-bar-track">
-                <div
-                  className="cost-bar-fill"
-                  style={{ width: `${pct}%`, backgroundColor: c.color }}
-                />
-              </div>
-            </div>
+            <g key={c.label}>
+              <rect x={x} y={barY} width={w} height={barH} fill={c.color} rx="6" />
+              <text
+                x={x + w / 2}
+                y={barY + barH / 2 + 6}
+                textAnchor="middle"
+                fill="#0F1923"
+                fontSize="18"
+                fontWeight="700"
+                fontFamily="Inter, sans-serif"
+              >
+                {c.pct.toFixed(0)}%
+              </text>
+            </g>
           )
         })}
-      </div>
-      <div className="cost-total">
-        <span>Totale</span>
-        <span className="cost-total-value">{costTotal.toLocaleString('it-IT')} €/mese</span>
-      </div>
+
+        {/* Detail rows below */}
+        {costBreakdown.map((c, i) => {
+          const colW = (W - padL - padR) / costBreakdown.length
+          const x = padL + colW * i + colW / 2
+          const y = barY + barH + 60
+          return (
+            <g key={`d-${c.label}`}>
+              <circle cx={x - 70} cy={y - 6} r="5" fill={c.color} />
+              <text
+                x={x - 58}
+                y={y}
+                fill="#8892b0"
+                fontSize="14"
+                fontFamily="Inter, sans-serif"
+              >
+                {c.label}
+              </text>
+              <text
+                x={x - 58}
+                y={y + 24}
+                fill="#ffffff"
+                fontSize="20"
+                fontWeight="700"
+                fontFamily="Inter, sans-serif"
+              >
+                {c.value.toLocaleString('it-IT')} €
+              </text>
+            </g>
+          )
+        })}
+
+        {/* Totale a destra */}
+        <text
+          x={W - padR}
+          y={padT + 18}
+          fill="#8892b0"
+          fontSize="13"
+          textAnchor="end"
+          fontFamily="Inter, sans-serif"
+        >
+          Totale mensile
+        </text>
+        <text
+          x={W - padR}
+          y={padT + 42}
+          fill="#ffffff"
+          fontSize="22"
+          fontWeight="700"
+          textAnchor="end"
+          fontFamily="Inter, sans-serif"
+        >
+          {costTotal.toLocaleString('it-IT')} €
+        </text>
+      </svg>
     </div>
   )
 }
 
 function InsightsPanel() {
   return (
-    <div className="insights-panel">
-      <div className="insights-header">
-        <h3 className="chart-title">Insights AI</h3>
-        <p className="chart-desc">Raccomandazioni generate automaticamente dai dati operativi</p>
+    <div className="chart-card">
+      <div className="chart-header">
+        <div>
+          <h3 className="chart-title">Insights AI</h3>
+          <p className="chart-desc">Raccomandazioni generate automaticamente dai dati operativi</p>
+        </div>
       </div>
       <div className="insights-grid">
         {insights.map((ins) => (
@@ -371,19 +462,13 @@ export default function AnalyticsForecast() {
         ))}
       </div>
 
-      {/* Main grid: chart + side panels */}
-      <div className="analytics-grid">
-        <div className="analytics-main">
-          <VolumeChart />
-        </div>
-        <div className="analytics-side">
-          <FleetPanel />
-          <CostsPanel />
-        </div>
+      {/* All panels stacked vertically with identical dimensions */}
+      <div className="analytics-stack">
+        <VolumeChart />
+        <FleetPanel />
+        <CostsPanel />
+        <InsightsPanel />
       </div>
-
-      {/* Insights bottom */}
-      <InsightsPanel />
     </div>
   )
 }
