@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   kpis,
   volumeSeries,
@@ -443,7 +444,17 @@ function InsightsPanel() {
   )
 }
 
+const SUB_TABS = [
+  { id: 'volumi', label: 'Volumi & Forecast', component: VolumeChart },
+  { id: 'flotta', label: 'Utilizzo flotta', component: FleetPanel },
+  { id: 'costi', label: 'Simulazione costi', component: CostsPanel },
+  { id: 'insights', label: 'Insights AI', component: InsightsPanel },
+]
+
 export default function AnalyticsForecast() {
+  const [activeTab, setActiveTab] = useState('volumi')
+  const ActiveComponent = SUB_TABS.find((t) => t.id === activeTab).component
+
   return (
     <div className="analytics-page">
       {/* Header */}
@@ -462,12 +473,22 @@ export default function AnalyticsForecast() {
         ))}
       </div>
 
-      {/* All panels stacked vertically with identical dimensions */}
+      {/* Sub-tabs navigation */}
+      <div className="sub-tabs">
+        {SUB_TABS.map((t) => (
+          <button
+            key={t.id}
+            className={`sub-tab ${activeTab === t.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Active panel */}
       <div className="analytics-stack">
-        <VolumeChart />
-        <FleetPanel />
-        <CostsPanel />
-        <InsightsPanel />
+        <ActiveComponent />
       </div>
     </div>
   )
