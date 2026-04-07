@@ -122,9 +122,9 @@ function VolumeChart() {
             />
             <text
               x={padL - 10}
-              y={yFor(t) + 4}
+              y={yFor(t) + 5}
               fill="#8892b0"
-              fontSize="12"
+              fontSize="15"
               textAnchor="end"
               fontFamily="Inter, sans-serif"
             >
@@ -138,9 +138,9 @@ function VolumeChart() {
           <text
             key={`xl-${i}`}
             x={xFor(i)}
-            y={H - padB + 22}
+            y={H - padB + 24}
             fill="#8892b0"
-            fontSize="12"
+            fontSize="15"
             textAnchor="middle"
             fontFamily="Inter, sans-serif"
           >
@@ -160,9 +160,9 @@ function VolumeChart() {
         />
         <text
           x={xFor(todayIdx) + 8}
-          y={padT + 14}
+          y={padT + 16}
           fill="#8892b0"
-          fontSize="11"
+          fontSize="14"
           fontFamily="Inter, sans-serif"
         >
           oggi
@@ -222,9 +222,9 @@ function VolumeChart() {
               <circle cx={xFor(peakIdx)} cy={yFor(v)} r="8" fill="none" stroke="#FFD93D" strokeWidth="2" />
               <text
                 x={xFor(peakIdx)}
-                y={yFor(v) - 14}
+                y={yFor(v) - 16}
                 fill="#FFD93D"
-                fontSize="11"
+                fontSize="14"
                 fontWeight="600"
                 textAnchor="middle"
                 fontFamily="Inter, sans-serif"
@@ -344,10 +344,10 @@ function CostsPanel() {
               <rect x={x} y={barY} width={w} height={barH} fill={c.color} rx="6" />
               <text
                 x={x + w / 2}
-                y={barY + barH / 2 + 6}
+                y={barY + barH / 2 + 8}
                 textAnchor="middle"
                 fill="#0F1923"
-                fontSize="18"
+                fontSize="22"
                 fontWeight="700"
                 fontFamily="Inter, sans-serif"
               >
@@ -364,21 +364,21 @@ function CostsPanel() {
           const y = barY + barH + 60
           return (
             <g key={`d-${c.label}`}>
-              <circle cx={x - 70} cy={y - 6} r="5" fill={c.color} />
+              <circle cx={x - 80} cy={y - 7} r="6" fill={c.color} />
               <text
-                x={x - 58}
+                x={x - 66}
                 y={y}
                 fill="#8892b0"
-                fontSize="14"
+                fontSize="17"
                 fontFamily="Inter, sans-serif"
               >
                 {c.label}
               </text>
               <text
-                x={x - 58}
-                y={y + 24}
+                x={x - 66}
+                y={y + 28}
                 fill="#ffffff"
-                fontSize="20"
+                fontSize="24"
                 fontWeight="700"
                 fontFamily="Inter, sans-serif"
               >
@@ -391,9 +391,9 @@ function CostsPanel() {
         {/* Totale a destra */}
         <text
           x={W - padR}
-          y={padT + 18}
+          y={padT + 20}
           fill="#8892b0"
-          fontSize="13"
+          fontSize="16"
           textAnchor="end"
           fontFamily="Inter, sans-serif"
         >
@@ -401,9 +401,9 @@ function CostsPanel() {
         </text>
         <text
           x={W - padR}
-          y={padT + 42}
+          y={padT + 48}
           fill="#ffffff"
-          fontSize="22"
+          fontSize="26"
           fontWeight="700"
           textAnchor="end"
           fontFamily="Inter, sans-serif"
