@@ -1126,24 +1126,32 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .cfg-field-label {
-  font-size: 14px;
+  font-size: 13px;
   color: #c0c8d4;
   font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
 }
 
 .cfg-chip {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #4ECDC4;
   background: rgba(78, 205, 196, 0.12);
   border: 1px solid rgba(78, 205, 196, 0.3);
-  padding: 5px 11px;
+  padding: 4px 9px;
   border-radius: 8px;
   font-family: 'SF Mono', Monaco, monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cfg-chip.muted {
@@ -1153,10 +1161,12 @@ body {
 }
 
 .cfg-value {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #ffffff;
   font-family: 'SF Mono', Monaco, monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .cfg-toggle {
