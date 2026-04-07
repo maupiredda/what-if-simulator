@@ -4,6 +4,7 @@ import AddressNormalization from './AddressNormalization'
 import AnalyticsForecast from './AnalyticsForecast'
 import RoutingComplexity from './RoutingComplexity'
 import PharmaVertical from './PharmaVertical'
+import AboutUs from './AboutUs'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -254,13 +255,19 @@ function WhatIfPage() {
 }
 
 export default function App() {
-  const [page, setPage] = useState('whatif');
+  const [page, setPage] = useState('about');
   const [phaseIndex, setPhaseIndex] = useState(0);
 
   return (
     <div className="app">
       {/* Page switcher */}
       <nav className="page-switcher">
+        <button
+          className={`page-tab ${page === 'about' ? 'active' : ''}`}
+          onClick={() => setPage('about')}
+        >
+          Chi siamo
+        </button>
         <button
           className={`page-tab ${page === 'whatif' ? 'active' : ''}`}
           onClick={() => setPage('whatif')}
@@ -293,6 +300,7 @@ export default function App() {
         </button>
       </nav>
 
+      {page === 'about' && <AboutUs />}
       {page === 'whatif' && <WhatIfPage />}
       {page === 'addresses' && (
         <AddressNormalization phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} />

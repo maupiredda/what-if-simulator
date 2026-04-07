@@ -1042,6 +1042,79 @@ body {
   font-weight: 700;
 }
 
+/* ─── About Us page ─── */
+.logo-about {
+  background: #2563eb;
+  letter-spacing: 2px;
+}
+
+.subtitle-large {
+  font-size: 19px;
+  line-height: 1.55;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+
+.product-card {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 44px 28px 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 420px;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.product-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 36px;
+}
+
+.product-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 22px;
+}
+
+.product-desc {
+  font-size: 16px;
+  color: #8892b0;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ─── Pharma Vertical page ─── */
 
 /* Common badge in headers */
