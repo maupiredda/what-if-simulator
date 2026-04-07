@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { scenarios, allPoints } from './data/scenarios'
+import AddressNormalization from './AddressNormalization'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -172,7 +173,7 @@ function ScenarioChange({ from, to }) {
   );
 }
 
-export default function App() {
+function WhatIfPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scenario = scenarios[activeIndex];
   const prevScenario = activeIndex > 0 ? scenarios[activeIndex - 1] : null;
@@ -186,7 +187,7 @@ export default function App() {
   ];
 
   return (
-    <div className="app">
+    <>
       {/* Header */}
       <header className="header">
         <div className="logo">OPTIVO</div>
@@ -241,6 +242,36 @@ export default function App() {
           </div>
         ))}
       </div>
+    </>
+  );
+}
+
+export default function App() {
+  const [page, setPage] = useState('whatif');
+  const [phaseIndex, setPhaseIndex] = useState(0);
+
+  return (
+    <div className="app">
+      {/* Page switcher */}
+      <nav className="page-switcher">
+        <button
+          className={`page-tab ${page === 'whatif' ? 'active' : ''}`}
+          onClick={() => setPage('whatif')}
+        >
+          Simulazione what-if
+        </button>
+        <button
+          className={`page-tab ${page === 'addresses' ? 'active' : ''}`}
+          onClick={() => setPage('addresses')}
+        >
+          Normalizzazione anagrafiche
+        </button>
+      </nav>
+
+      {page === 'whatif' && <WhatIfPage />}
+      {page === 'addresses' && (
+        <AddressNormalization phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} />
+      )}
     </div>
   );
 }
