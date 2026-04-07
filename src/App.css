@@ -165,6 +165,10 @@ body {
   color: #FF6B6B;
 }
 
+.kpi-diff.placeholder {
+  visibility: hidden;
+}
+
 /* ─── Scenario Header ─── */
 .scenario-header {
   text-align: center;

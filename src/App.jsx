@@ -7,6 +7,7 @@ function KpiCard({ label, value, unit, icon, prevValue }) {
   const pct = prevValue != null && prevValue !== 0
     ? ((value - prevValue) / prevValue * 100).toFixed(1)
     : null;
+  const showDiff = diff != null && diff !== 0;
 
   return (
     <div className="kpi-card">
@@ -17,11 +18,14 @@ function KpiCard({ label, value, unit, icon, prevValue }) {
           {typeof value === 'number' ? value.toLocaleString('it-IT') : value}
           <span className="kpi-unit">{unit}</span>
         </div>
-        {diff != null && diff !== 0 && (
-          <div className={`kpi-diff ${diff < 0 ? 'positive' : 'negative'}`}>
-            {diff < 0 ? '' : '+'}{diff.toLocaleString('it-IT')} ({diff < 0 ? '' : '+'}{pct}%)
-          </div>
-        )}
+        <div
+          className={`kpi-diff ${showDiff ? (diff < 0 ? 'positive' : 'negative') : 'placeholder'}`}
+          aria-hidden={!showDiff}
+        >
+          {showDiff
+            ? `${diff < 0 ? '' : '+'}${diff.toLocaleString('it-IT')} (${diff < 0 ? '' : '+'}${pct}%)`
+            : '\u00A0'}
+        </div>
       </div>
     </div>
   );
