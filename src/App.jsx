@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { scenarios, allPoints } from './data/scenarios'
 import AddressNormalization from './AddressNormalization'
+import AnalyticsForecast from './AnalyticsForecast'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -270,12 +271,19 @@ export default function App() {
         >
           Normalizzazione anagrafiche
         </button>
+        <button
+          className={`page-tab ${page === 'analytics' ? 'active' : ''}`}
+          onClick={() => setPage('analytics')}
+        >
+          Analytics & Forecasting
+        </button>
       </nav>
 
       {page === 'whatif' && <WhatIfPage />}
       {page === 'addresses' && (
         <AddressNormalization phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} />
       )}
+      {page === 'analytics' && <AnalyticsForecast />}
     </div>
   );
 }
