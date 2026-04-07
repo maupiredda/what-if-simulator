@@ -914,3 +914,130 @@ body {
     gap: 14px;
   }
 }
+
+/* ─── Routing Complexity page ─── */
+.logo-planning {
+  background: #2563eb;
+  letter-spacing: 2px;
+}
+
+.complexity-card {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.complexity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+}
+
+.complexity-table thead th {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  padding: 22px 24px;
+  letter-spacing: 0.3px;
+}
+
+.complexity-table thead th.th-note {
+  background: #2563eb;
+  width: 280px;
+}
+
+.complexity-table tbody td {
+  padding: 28px 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.complexity-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cell-points {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  width: 280px;
+}
+
+.cell-combinations {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cell-combinations.highlight {
+  color: #FFD93D;
+  font-size: 38px;
+}
+
+.cell-combinations sup {
+  font-size: 0.6em;
+  vertical-align: super;
+}
+
+.cell-note {
+  text-align: left;
+  width: 280px;
+}
+
+.complexity-note {
+  color: #8892b0;
+  line-height: 1.4;
+}
+
+.note-main {
+  font-size: 17px;
+  font-weight: 600;
+  color: #c0c8d4;
+}
+
+.note-main sup {
+  font-size: 0.7em;
+  vertical-align: super;
+}
+
+.note-sub {
+  font-size: 15px;
+  color: #8892b0;
+  margin-top: 2px;
+}
+
+.row-highlight {
+  background: rgba(255, 217, 61, 0.04);
+}
+
+.complexity-footer {
+  background: rgba(255, 217, 61, 0.06);
+  border: 1px solid rgba(255, 217, 61, 0.2);
+  border-radius: 14px;
+  padding: 28px 32px;
+  text-align: center;
+}
+
+.complexity-footer p {
+  font-size: 19px;
+  color: #c0c8d4;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.complexity-footer .footer-sub {
+  font-size: 16px;
+  color: #8892b0;
+  margin-top: 8px;
+}
+
+.highlight-text {
+  color: #FFD93D;
+  font-weight: 700;
+}

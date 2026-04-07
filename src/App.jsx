@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { scenarios, allPoints } from './data/scenarios'
 import AddressNormalization from './AddressNormalization'
 import AnalyticsForecast from './AnalyticsForecast'
+import RoutingComplexity from './RoutingComplexity'
 
 function KpiCard({ label, value, unit, icon, prevValue }) {
   const diff = prevValue != null ? value - prevValue : null;
@@ -277,6 +278,12 @@ export default function App() {
         >
           Analytics & Forecasting
         </button>
+        <button
+          className={`page-tab ${page === 'complexity' ? 'active' : ''}`}
+          onClick={() => setPage('complexity')}
+        >
+          Complessità routing
+        </button>
       </nav>
 
       {page === 'whatif' && <WhatIfPage />}
@@ -284,6 +291,7 @@ export default function App() {
         <AddressNormalization phaseIndex={phaseIndex} setPhaseIndex={setPhaseIndex} />
       )}
       {page === 'analytics' && <AnalyticsForecast />}
+      {page === 'complexity' && <RoutingComplexity />}
     </div>
   );
 }
