@@ -10,18 +10,19 @@ import {
 
 // ─── 1. Timeline (Gantt) ─────────────────────────────────────────
 function GanttTimeline() {
-  const W = 1000
-  const H = 540
-  const padL = 130
+  const W = 1200
+  const H = 620
+  const padL = 170
   const padR = 30
-  const padT = 70
+  const padT = 100
   const padB = 50
 
   const startHour = 6
-  const endHour = 26 // 02:00 del giorno dopo
+  const endHour = 27 // 03:00 del giorno dopo
   const hourW = (W - padL - padR) / (endHour - startHour)
   const rowH = (H - padT - padB) / ganttVehicles.length
-  const blockH = rowH * 0.62
+  const blockH = 52
+  const nowHour = 11.5 // ora corrente fittizia per l'indicatore
 
   const xFor = (h) => padL + (h - startHour) * hourW
   const yFor = (i) => padT + i * rowH + (rowH - blockH) / 2
@@ -31,12 +32,21 @@ function GanttTimeline() {
     return `${String(hh).padStart(2, '0')}:00`
   }
 
+  // Stats
+  const totalDeliveries = ganttVehicles.reduce((acc, v) => acc + v.deliveries.length, 0)
+  const totalHours = ganttVehicles.reduce(
+    (acc, v) => acc + v.deliveries.reduce((s, d) => s + d.duration, 0),
+    0
+  )
+
   return (
     <div className="chart-card">
       <div className="chart-header">
         <div>
           <h3 className="chart-title">Schedulazione giornaliera</h3>
-          <p className="chart-desc">8 veicoli × 16 ore — vincoli farmaceutici applicati in tempo reale</p>
+          <p className="chart-desc">
+            {ganttVehicles.length} veicoli · {totalDeliveries} consegne · {totalHours.toFixed(1)} ore di attività
+          </p>
         </div>
         <div className="chart-legend">
           {Object.entries(ganttTypes).map(([key, t]) => (
@@ -49,25 +59,43 @@ function GanttTimeline() {
       </div>
 
       <svg viewBox={`0 0 ${W} ${H}`} className="volume-chart" preserveAspectRatio="xMidYMid meet">
-        {/* Vertical hour grid */}
+        <defs>
+          <pattern id="diag-night" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="rgba(167, 139, 250, 0.04)" />
+            <line x1="0" y1="6" x2="6" y2="0" stroke="rgba(167, 139, 250, 0.12)" strokeWidth="1" />
+          </pattern>
+        </defs>
+
+        {/* Background notturno (21:00 - 06:00) */}
+        <rect
+          x={xFor(21)}
+          y={padT - 30}
+          width={xFor(endHour) - xFor(21)}
+          height={H - padT - padB + 30}
+          fill="url(#diag-night)"
+        />
+
+        {/* Vertical hour grid + labels */}
         {Array.from({ length: endHour - startHour + 1 }, (_, i) => {
           const h = startHour + i
+          const isMajor = h % 2 === 0
           return (
             <g key={`gh-${h}`}>
               <line
                 x1={xFor(h)}
                 x2={xFor(h)}
-                y1={padT - 14}
+                y1={padT - 30}
                 y2={H - padB + 4}
-                stroke="rgba(255,255,255,0.05)"
+                stroke={isMajor ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)'}
                 strokeWidth="1"
               />
-              {i % 2 === 0 && (
+              {isMajor && (
                 <text
                   x={xFor(h)}
-                  y={padT - 22}
-                  fill="#8892b0"
-                  fontSize="13"
+                  y={padT - 40}
+                  fill="#c0c8d4"
+                  fontSize="14"
+                  fontWeight="600"
                   textAnchor="middle"
                   fontFamily="Inter, sans-serif"
                 >
@@ -78,55 +106,148 @@ function GanttTimeline() {
           )
         })}
 
+        {/* Linea ora corrente */}
+        <line
+          x1={xFor(nowHour)}
+          x2={xFor(nowHour)}
+          y1={padT - 30}
+          y2={H - padB}
+          stroke="#FFD93D"
+          strokeWidth="2"
+          strokeDasharray="6 4"
+        />
+        <rect
+          x={xFor(nowHour) - 28}
+          y={padT - 70}
+          width="56"
+          height="22"
+          rx="4"
+          fill="#FFD93D"
+        />
+        <text
+          x={xFor(nowHour)}
+          y={padT - 55}
+          fill="#0F1923"
+          fontSize="13"
+          fontWeight="700"
+          textAnchor="middle"
+          fontFamily="Inter, sans-serif"
+        >
+          ORA
+        </text>
+
         {/* Vehicle rows */}
         {ganttVehicles.map((veh, i) => (
           <g key={veh.id}>
-            {/* Row label */}
+            {/* Row hover band */}
+            <rect
+              x={padL}
+              y={padT + i * rowH}
+              width={W - padL - padR}
+              height={rowH}
+              fill={i % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'}
+            />
+            {/* Vehicle label badge */}
+            <rect
+              x={padL - 150}
+              y={yFor(i) + (blockH - 36) / 2}
+              width="138"
+              height="36"
+              rx="8"
+              fill="rgba(255,255,255,0.04)"
+              stroke={veh.typeColor}
+              strokeWidth="1.5"
+              strokeOpacity="0.6"
+            />
+            <circle
+              cx={padL - 150 + 22}
+              cy={yFor(i) + blockH / 2}
+              r="11"
+              fill={veh.typeColor}
+            />
             <text
-              x={padL - 16}
+              x={padL - 150 + 22}
               y={yFor(i) + blockH / 2 + 5}
-              fill="#ffffff"
-              fontSize="14"
-              fontWeight="600"
-              textAnchor="end"
+              fill="#0F1923"
+              fontSize="13"
+              fontWeight="800"
+              textAnchor="middle"
               fontFamily="Inter, sans-serif"
             >
-              {veh.label}
+              {veh.id}
             </text>
-            {/* Row separator */}
-            <line
-              x1={padL}
-              x2={W - padR}
-              y1={padT + (i + 1) * rowH}
-              y2={padT + (i + 1) * rowH}
-              stroke="rgba(255,255,255,0.04)"
-              strokeWidth="1"
-            />
+            <text
+              x={padL - 150 + 40}
+              y={yFor(i) + blockH / 2 + 5}
+              fill="#ffffff"
+              fontSize="13"
+              fontWeight="600"
+              fontFamily="Inter, sans-serif"
+            >
+              {veh.typeLabel}
+            </text>
+
+            {/* Hub start */}
+            <g>
+              <rect
+                x={xFor(startHour) - 6}
+                y={yFor(i) + (blockH - 36) / 2}
+                width="36"
+                height="36"
+                rx="6"
+                fill="rgba(255,255,255,0.04)"
+                stroke="rgba(255,255,255,0.15)"
+                strokeWidth="1"
+              />
+              <text
+                x={xFor(startHour) + 12}
+                y={yFor(i) + blockH / 2 + 6}
+                fill="#c0c8d4"
+                fontSize="18"
+                textAnchor="middle"
+                fontFamily="Inter, sans-serif"
+              >
+                🏭
+              </text>
+            </g>
+
             {/* Deliveries */}
             {veh.deliveries.map((d, j) => {
               const t = ganttTypes[d.type]
               const x = xFor(d.start)
               const w = d.duration * hourW
+              const maxChars = Math.max(4, Math.floor((w - 28) / 8))
+              const displayName =
+                d.name.length > maxChars ? d.name.slice(0, maxChars - 1) + '…' : d.name
               return (
                 <g key={`d-${i}-${j}`}>
                   <rect
                     x={x}
                     y={yFor(i)}
-                    width={w}
+                    width={w - 4}
                     height={blockH}
-                    rx="6"
+                    rx="8"
                     fill={t.color}
-                    fillOpacity="0.85"
                   />
                   <text
-                    x={x + 8}
-                    y={yFor(i) + blockH / 2 + 4}
+                    x={x + 14}
+                    y={yFor(i) + 22}
                     fill="#0F1923"
-                    fontSize="10"
+                    fontSize="14"
                     fontWeight="700"
                     fontFamily="Inter, sans-serif"
                   >
-                    {d.name.length > 16 ? d.name.slice(0, 14) + '…' : d.name}
+                    {displayName}
+                  </text>
+                  <text
+                    x={x + 14}
+                    y={yFor(i) + 40}
+                    fill="rgba(15, 25, 35, 0.7)"
+                    fontSize="11"
+                    fontWeight="600"
+                    fontFamily="Inter, sans-serif"
+                  >
+                    {formatHour(d.start)} · {Math.round(d.duration * 60)}min
                   </text>
                 </g>
               )
@@ -140,7 +261,23 @@ function GanttTimeline() {
 
 // ─── 2. Configuratore vincoli pharma ─────────────────────────────
 function ConfigPanel() {
-  const renderField = (f, idx) => {
+  // Stato dinamico dei toggle: chiave "{sectionId}-{fieldIdx}" → bool
+  const initialToggles = {}
+  configSections.forEach((s) => {
+    s.fields.forEach((f, i) => {
+      if (f.type === 'toggle-on') {
+        initialToggles[`${s.id}-${i}`] = true
+      }
+    })
+  })
+  const [toggles, setToggles] = useState(initialToggles)
+
+  const toggleField = (key) => {
+    setToggles((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const renderField = (sectionId, f, idx) => {
+    const key = `${sectionId}-${idx}`
     if (f.type === 'chip') {
       return (
         <div key={idx} className="cfg-field">
@@ -158,12 +295,18 @@ function ConfigPanel() {
       )
     }
     if (f.type === 'toggle-on') {
+      const isOn = toggles[key]
       return (
         <div key={idx} className="cfg-field">
           <span className="cfg-field-label">{f.label}</span>
-          <span className="cfg-toggle on">
+          <button
+            type="button"
+            className={`cfg-toggle ${isOn ? 'on' : ''}`}
+            onClick={() => toggleField(key)}
+            aria-label={`Toggle ${f.label}`}
+          >
             <span className="cfg-toggle-dot"></span>
-          </span>
+          </button>
         </div>
       )
     }
@@ -196,7 +339,7 @@ function ConfigPanel() {
               </div>
             </div>
             <div className="config-section-fields">
-              {s.fields.map((f, i) => renderField(f, i))}
+              {s.fields.map((f, i) => renderField(s.id, f, i))}
             </div>
           </div>
         ))}

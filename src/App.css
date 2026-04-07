@@ -1066,7 +1066,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 16px;
+  gap: 18px;
   flex: 1;
 }
 
@@ -1074,26 +1074,26 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  padding: 16px;
+  padding: 22px 22px;
   display: flex;
   flex-direction: column;
 }
 
 .config-section-head {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: flex-start;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .config-section-icon {
-  font-size: 22px;
-  width: 36px;
-  height: 36px;
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1101,23 +1101,23 @@ body {
 }
 
 .config-section-title {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: #ffffff;
   line-height: 1.25;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .config-section-desc {
-  font-size: 11px;
+  font-size: 13px;
   color: #8892b0;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .config-section-fields {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 11px;
   flex: 1;
   justify-content: space-around;
 }
@@ -1126,23 +1126,23 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .cfg-field-label {
-  font-size: 11px;
-  color: #8892b0;
+  font-size: 14px;
+  color: #c0c8d4;
   font-weight: 500;
 }
 
 .cfg-chip {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: #4ECDC4;
   background: rgba(78, 205, 196, 0.12);
-  border: 1px solid rgba(78, 205, 196, 0.25);
-  padding: 3px 8px;
-  border-radius: 6px;
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  padding: 5px 11px;
+  border-radius: 8px;
   font-family: 'SF Mono', Monaco, monospace;
 }
 
@@ -1153,38 +1153,51 @@ body {
 }
 
 .cfg-value {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #ffffff;
   font-family: 'SF Mono', Monaco, monospace;
 }
 
 .cfg-toggle {
-  width: 32px;
-  height: 18px;
-  border-radius: 9px;
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
   position: relative;
   flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  padding: 0;
+}
+
+.cfg-toggle:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .cfg-toggle.on {
   background: #4ECDC4;
 }
 
+.cfg-toggle.on:hover {
+  background: #5fdbd2;
+}
+
 .cfg-toggle-dot {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #ffffff;
-  transition: left 0.2s ease;
+  transition: left 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .cfg-toggle.on .cfg-toggle-dot {
-  left: 16px;
+  left: 21px;
 }
 
 /* ─── Scheda farmacia (sub-tab 3) ─── */
